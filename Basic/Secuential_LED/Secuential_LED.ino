@@ -19,7 +19,8 @@ void loop() {
   left ();
   right ();
 
-  delay (1000);
+  off ();
+  delay (500);
 
   left (); 
   left ();
@@ -27,6 +28,26 @@ void loop() {
   right ();
   right ();
   right ();
+
+  off ();
+  delay (500);
+
+  right ();
+  right ();
+  right ();
+  right ();
+  right ();
+  right ();
+  left (); 
+  left ();
+  left ();
+  left (); 
+  left ();
+  left ();
+
+  off ();
+  delay (100);
+
 }
 
 void right () {
@@ -63,5 +84,11 @@ void left () {
   digitalWrite (red_led,LOW);
   Serial.println("--> LED verde encendido");
   delay (pause);
+}
+
+void off (){
+  digitalWrite (red_led,LOW);
+  digitalWrite (green_led,LOW);
+  digitalWrite (blue_led,LOW);
 }
 

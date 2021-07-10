@@ -4,7 +4,7 @@ const int button  = 3;
 
 void setup() {
   Serial.begin (9600);
-  pinMode (button,INPUT);
+  pinMode (button,INPUT_PULLUP);
   pinMode (led,OUTPUT);
 }
 

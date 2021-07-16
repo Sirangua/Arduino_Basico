@@ -23,6 +23,7 @@ long last_time_up;
 long time_gap_up;
 long counter1 = 0;
 bool change_room_temperature = false;
+byte buffer_temps [128];
 
 //SETUP function
 void setup() {
@@ -42,6 +43,11 @@ void setup() {
 
   //Show the initial temperature's room
   show_room_temperature (room_temperature);
+
+  //Filling the buffer array
+  for (int i = 0; i < 128; i++){
+    buffer_temps [i] = 110;
+  }
 }
 
 
@@ -55,7 +61,9 @@ void loop() {
     temperature = (signal_temperature / 1024) * 500;
     fan_action ();
     show_temperature(temperature);
+    fill_buffer(temperature);
     draw_grid();
+    graph ();
   }
 
   //To show changes in the room's temperature
@@ -63,20 +71,16 @@ void loop() {
     show_room_temperature(room_temperature);
     change_room_temperature = false;
   }
-
-  
-  }
+}
 
 //Function to move the fan
 void fan_action() {
   if (temperature > room_temperature){
     digitalWrite (fan, HIGH);
     fan_activated = true;
-    Serial.println ("Ventilador activado --> Temperatura: " + String(temperature) + "°C");
   }else{
     digitalWrite (fan, LOW);
     fan_activated  = false;
-    Serial.println ("Ventilador desactivado --> Temperatura: " + String(temperature) + "°C");
   }
 }
 
@@ -104,7 +108,7 @@ void decrease_limit (){
   } 
 }
 
-
+//Function to show the temperature on display
 void show_temperature (float temp){
   display.setTextColor (WHITE,BLACK);
   display.setTextSize (1);
@@ -113,6 +117,7 @@ void show_temperature (float temp){
   display.display ();
 }
 
+//Function to show the room's temperature on display
 void show_room_temperature (float temp){
   display.setTextColor (WHITE,BLACK);
   display.setTextSize (1);
@@ -121,11 +126,41 @@ void show_room_temperature (float temp){
   display.display ();
 }
 
+
+//Function to show a grid on display
 void draw_grid (){
+  //To erase the last results
+  display.fillRect(0,16,128,50,BLACK);
   //Repeat points drawing a grid 
   for (int j = 16; j < 63; j = j + 10){
-    for (int i = 0; i < 127; i = i +10 ){
+    for (int i = 0; i < 127; i = i + 10 ){
       display.drawPixel (i,j,WHITE);
     }
+
+    //To draw a line for 0°C
+    if (j == 56){
+      for (int i = 0; i < 127; i++ ){
+      display.drawPixel (i,j,WHITE);
+      }
+    }
   }
+}
+
+
+//Function to graphic in real time the curve of temperature
+void graph (){ //FAlta pasarle el parametro
+  for (int i = 0; i < 127; i++){
+    if (buffer_temps [i]< 100){
+      int y = map (buffer_temps [i],-7,42,64,16);
+      display.drawPixel (i,y,WHITE);
+    }
+  }
+}
+
+//Functoion to fill the buffer
+void fill_buffer (float temp){
+  for (int i = 1; i < 128; i++){
+    buffer_temps [i - 1] = (byte) buffer_temps[i];
+  }
+  buffer_temps [127] = (byte) temp;
 }

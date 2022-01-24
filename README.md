@@ -1,2 +1,2 @@
-# Course_Arduino
+# Arduino
 Códigos básicos Arduino

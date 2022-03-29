@@ -10,6 +10,7 @@ void setup() {
   Serial.begin (9600);
   pinMode (button,INPUT_PULLUP);
   pinMode (led,OUTPUT);
+  //Difining an interrruption
   attachInterrupt (digitalPinToInterrupt(button),consult_state,FALLING); //Best form to define a pin as a interruption 
 }
 
